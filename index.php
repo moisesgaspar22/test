@@ -1,61 +1,26 @@
 <?php
 
-class DepedencyInjector implements ArrayAccess
-{
+include 'vendor/autoload.php';
 
-    protected $container = [];
+$DI = new Src\DependencyInjector();
 
-    public function __construct()
-    {
+$DI->registerService('logger', function($di){
+    // create a log channel
+    $log = new Monolog\Logger('name');
+    $log->pushHandler(new Monolog\Handler\StreamHandler('logger.log', Monolog\Logger::WARNING));
 
-    }
+     return $log;
+});
 
-    public function registerService($service, callable $callable)
-    {
-        $this->container[$service] = $callable;
-    }
-
-    public function getService($service)
-    {
-        if(!array_key_exists($service, $this->container)){
-            throw new Exception("Error Processing Request", 1);
-        }
-        return $this->container[$service]($this);
-    }
-
-    public function offsetSet($offset, $value)
-    {
-        if (is_null($offset)) {
-            $this->container[] = $value;
-        } else {
-            $this->container[$offset] = $value;
-        }
-    }
-
-    public function offsetExists($offset)
-    {
-        return isset($this->container[$offset]);
-    }
-
-    public function offsetUnset($offset)
-    {
-        unset($this->container[$offset]);
-    }
-
-    public function offsetGet($offset)
-    {
-        return isset($this->container[$offset]) ? $this->container[$offset] : null;
-    }
-
-}
-
-$DI = new \DepedencyInjector();
-
-$DI->registerService('db', function($di){
-    var_dump(['here' => $di]);
+$DI->registerService('db', function($container){
     $obj = new stdClass();
-    $obj->name = 'DI_Database';
+    //var_dump(
+    //    (new ReflectionClass('Monolog\\Logger'))->getConstructor()
+    //    );
+    $obj->name = 'DI_LOG';
+    $container->getService('logger')->warning('Foo');
     return $obj;
 });
 echo '<pre>';
-var_dump($DI->getService('db'));
+$DI->getService('db');
+
