@@ -14,9 +14,6 @@ $DI->registerService('logger', function($di){
 
 $DI->registerService('db', function($container){
     $obj = new stdClass();
-    //var_dump(
-    //    (new ReflectionClass('Monolog\\Logger'))->getConstructor()
-    //    );
     $obj->name = 'DI_LOG';
     $container->getService('logger')->warning('Foo');
     return $obj;
