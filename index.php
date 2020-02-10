@@ -3,7 +3,6 @@
 include 'vendor/autoload.php';
 
 $DI = new Src\DependencyInjector();
-$TI = new Src\Test();
 
 $DI->registerService('logger', function($di){
     // create a log channel
@@ -21,13 +20,13 @@ $DI->registerService('db', function($container){
 });
 
 $DI->registerService('test', function($container){
-    // $obj = new Src\Test();
-    // $container->getService('logger')->warning('From my test Class');
-    // return $obj;
+    $obj = new Src\Test();
+    $container->getService('logger')->warning('From my test Class');
+    return $obj;
 });
 
 
 echo '<pre>';
-//$DI->getService('db');
+$DI->getService('db');
 $DI->getService('test');
 
